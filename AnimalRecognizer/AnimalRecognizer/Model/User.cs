@@ -7,6 +7,6 @@
         public string Email { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
-        enum Role { admin, user }
+        enum Role { Admin, User }
     }
 }
