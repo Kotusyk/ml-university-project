@@ -13,7 +13,10 @@ namespace AnimalRecognizer.Data
         public DbSet<Shelter> Shelters { get; set; }
         public DbSet<User> Users { get;set; }
 
-
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=AnimalRecognizerDB;Trusted_Connection=True;");
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Pet>(entity =>
