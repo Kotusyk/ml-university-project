@@ -21,7 +21,7 @@ namespace AnimalRecognizer.Controllers
             _context = context;
         }
 
-        // GET: api/Pets
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Pet>>> GetPets()
         {
@@ -29,27 +29,43 @@ namespace AnimalRecognizer.Controllers
             {
                 return NotFound();
             }
-            return await _context.Pets.ToListAsync();
-        }
 
-        // GET: api/Pets/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Pet>> GetPet(int id)
+            var pets = await _context.Pets.Include(p => p.Image)
+                                                    .Include(p => p.CurrentShelter)
+                                                    .ToListAsync();
+            return Ok(pets);
+         
+        }
+        
+        [HttpGet("{type}")]
+        public async Task<ActionResult<IEnumerable<Pet>>> GetPetByType(string type)
         {
             if (_context.Pets == null)
             {
                 return NotFound();
             }
-            var pet = await _context.Pets.FindAsync(id);
 
-            if (pet == null)
+            if (type == "Cat")
+            {
+                var pets = _context.Pets.AsQueryable();
+                pets =  pets.Where(p => p.Type == Pet.PetType.Cat);
+                return await pets.Include(p => p.Image)
+                                 .Include(p => p.CurrentShelter).ToListAsync();
+            }
+            else if (type == "Dog")
+            {
+                var pets = _context.Pets.AsQueryable();
+                pets = pets.Where(p => p.Type == Pet.PetType.Dog);
+                return await pets.Include(p => p.Image)
+                                  .Include(p => p.CurrentShelter).ToListAsync();
+            }
+            else
             {
                 return NotFound();
             }
 
-            return pet;
         }
-
+      
         [HttpGet("{type}/{colour}")]
         public async Task<ActionResult<IEnumerable<Pet>>> GetPetByTypeAndColour(string type, string colour)
         {
@@ -64,7 +80,8 @@ namespace AnimalRecognizer.Controllers
 
                 pets = pets.Where(p => p.Type == Pet.PetType.Cat && p.Colour == colour);
 
-                return await pets.ToListAsync();
+                return await pets.Include(p => p.Image)
+                                 .Include(p => p.CurrentShelter).ToListAsync();
 
             }
             else if (type == "Dog")
@@ -73,15 +90,14 @@ namespace AnimalRecognizer.Controllers
 
                 pets = pets.Where(p => p.Type == Pet.PetType.Dog && p.Colour == colour);
 
-                return await pets.ToListAsync();
+                return await pets.Include(p => p.Image)
+                                 .Include(p => p.CurrentShelter).ToListAsync();
             }
 
             return NotFound();
 
         }
 
-        // PUT: api/Pets/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPet(int id, Pet pet)
         {
@@ -111,8 +127,6 @@ namespace AnimalRecognizer.Controllers
             return NoContent();
         }
 
-        // POST: api/Pets
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Pet>> PostPet(Pet pet)
         {
@@ -126,7 +140,6 @@ namespace AnimalRecognizer.Controllers
             return CreatedAtAction("GetPet", new { id = pet.Id }, pet);
         }
 
-        // DELETE: api/Pets/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePet(int id)
         {
