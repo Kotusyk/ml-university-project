@@ -50,6 +50,36 @@ namespace AnimalRecognizer.Controllers
             return pet;
         }
 
+        [HttpGet("{type}/{colour}")]
+        public async Task<ActionResult<IEnumerable<Pet>>> GetPetByTypeAndColour(string type, string colour)
+        {
+            if (_context.Pets == null)
+            {
+                return NotFound();
+            }
+
+            if (type == "Cat")
+            {
+                var pets = _context.Pets.AsQueryable();
+
+                pets = pets.Where(p => p.Type == Pet.PetType.Cat && p.Colour == colour);
+
+                return await pets.ToListAsync();
+
+            }
+            else if (type == "Dog")
+            {
+                var pets = _context.Pets.AsQueryable();
+
+                pets = pets.Where(p => p.Type == Pet.PetType.Dog && p.Colour == colour);
+
+                return await pets.ToListAsync();
+            }
+
+            return NotFound();
+
+        }
+
         // PUT: api/Pets/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
