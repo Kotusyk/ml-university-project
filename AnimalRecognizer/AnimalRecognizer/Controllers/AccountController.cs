@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AnimalRecognizer;
-using AnimalRecognizer.Data;
 using AnimalRecognizer.Model;
 using AnimalRecognizer.ViewModels;
+using AnimalRecognizer.Data;
 
 namespace AnimalRecognizer.Controllers
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AnimalRecognizer;
-using AnimalRecognizer.Data;
 using AnimalRecognizer.Model;
+using AnimalRecognizer.Data;
 
 namespace AnimalRecognizer.Controllers
 {
