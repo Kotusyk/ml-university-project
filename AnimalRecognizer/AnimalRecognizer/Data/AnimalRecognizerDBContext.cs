@@ -126,7 +126,7 @@ namespace AnimalRecognizer.Data
                 .HasMaxLength(150)
                 .IsUnicode(false);
 
-                entity.Property(c => c.Role)
+                entity.Property(c => c.Type)
                 .HasConversion<string>()
                 .HasMaxLength(150)
                 .IsUnicode(false);
