@@ -115,18 +115,8 @@ namespace AnimalRecognizer.Data
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(u => u.Id);
-
-                entity.Property(u => u.Name)
-                .HasColumnType("varchar")
-                .HasMaxLength(150)
-                .IsUnicode(false);
-
+            
                 entity.Property(u => u.Email)
-                .HasColumnType("varchar")
-                .HasMaxLength(150)
-                .IsUnicode(false);
-
-                entity.Property(u => u.Login)
                 .HasColumnType("varchar")
                 .HasMaxLength(150)
                 .IsUnicode(false);
