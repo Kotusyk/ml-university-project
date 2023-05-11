@@ -2,8 +2,16 @@ using AnimalRecognizer.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+         policy =>
+         {
+             policy.WithOrigins("http://localhost:3000/").AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+         });
+});
 // Add services to the container.
 
 builder.Services.AddDbContext<AnimalRecognizerDBContext>();
@@ -13,12 +21,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    //.AddCookie(options =>
-    //{
-    //    options.LoginPath = "/Account/Login";
-    //    options.LogoutPath = "/Account/Logout";
-    //});
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.Name = "YourCookieName";
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,6 +40,24 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
+app.UseCors(MyAllowSpecificOrigins);
+app.Use(async (context, next) =>
+{
+    if (context.Request.Method == "OPTIONS")
+    {
+        context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+        context.Response.Headers.Add("Access-Control-Allow-Headers", "*");
+        context.Response.Headers.Add("Access-Control-Allow-Methods", "*");
+        context.Response.Headers.Add("Access-Control-Max-Age", "86400");
+        context.Response.StatusCode = 204;
+        await context.Response.CompleteAsync();
+    }
+    else
+    {
+        await next();
+    }
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
