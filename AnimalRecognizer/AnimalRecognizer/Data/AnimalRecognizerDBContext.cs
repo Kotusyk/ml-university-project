@@ -16,7 +16,6 @@ namespace AnimalRecognizer.Data
         public DbSet<Pet> Pets { get; set; }
         public DbSet<Shelter> Shelters { get; set; }
         public DbSet<Image> Images { get; set; }
-        public DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -109,27 +108,6 @@ namespace AnimalRecognizer.Data
                 .WithOne(i => i.Image)
                 .HasForeignKey<Pet>(p => p.ImageId);
 
-
-            });
-
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasKey(u => u.Id);
-            
-                entity.Property(u => u.Email)
-                .HasColumnType("varchar")
-                .HasMaxLength(150)
-                .IsUnicode(false);
-
-                entity.Property(s => s.Password)
-                .HasColumnType("varchar")
-                .HasMaxLength(150)
-                .IsUnicode(false);
-
-                entity.Property(c => c.Role)
-                .HasConversion<string>()
-                .HasMaxLength(150)
-                .IsUnicode(false);
 
             });
 

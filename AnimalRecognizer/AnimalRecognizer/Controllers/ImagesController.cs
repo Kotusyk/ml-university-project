@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AnimalRecognizer.Data;
 using AnimalRecognizer.Model;
 
-namespace AnimalRecognizer
+namespace AnimalRecognizer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -25,10 +25,10 @@ namespace AnimalRecognizer
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Image>>> GetImages()
         {
-          if (_context.Images == null)
-          {
-              return NotFound();
-          }
+            if (_context.Images == null)
+            {
+                return NotFound();
+            }
             return await _context.Images.ToListAsync();
         }
 
@@ -36,10 +36,10 @@ namespace AnimalRecognizer
         [HttpGet("{id}")]
         public async Task<ActionResult<Image>> GetImage(int id)
         {
-          if (_context.Images == null)
-          {
-              return NotFound();
-          }
+            if (_context.Images == null)
+            {
+                return NotFound();
+            }
             var image = await _context.Images.FindAsync(id);
 
             if (image == null)
@@ -86,10 +86,10 @@ namespace AnimalRecognizer
         [HttpPost]
         public async Task<ActionResult<Image>> PostImage(Image image)
         {
-          if (_context.Images == null)
-          {
-              return Problem("Entity set 'AnimalRecognizerDBContext.Images'  is null.");
-          }
+            if (_context.Images == null)
+            {
+                return Problem("Entity set 'AnimalRecognizerDBContext.Images'  is null.");
+            }
             _context.Images.Add(image);
             await _context.SaveChangesAsync();
 

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AnimalRecognizer.Data;
 using AnimalRecognizer.Model;
+using AnimalRecognizer.DTOs;
+using AutoMapper;
 
 namespace AnimalRecognizer.Controllers
 {
@@ -15,49 +17,56 @@ namespace AnimalRecognizer.Controllers
     public class PetsController : ControllerBase
     {
         private readonly AnimalRecognizerDBContext _context;
+        private readonly IMapper _mapper;
 
-        public PetsController(AnimalRecognizerDBContext context)
+        public PetsController(AnimalRecognizerDBContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pet>>> GetPets()
+        public async Task<ActionResult<List<Pet>>> GetPets()
         {
-            if (_context.Pets == null)
-            {
-                return NotFound();
-            }
-
             var pets = await _context.Pets.Include(p => p.Image)
-                                                    .Include(p => p.CurrentShelter)
-                                                    .ToListAsync();
-            return Ok(pets);
-         
+                                          .Include(p => p.CurrentShelter)
+                                          .ToListAsync();
+
+            var mappedPets = pets.Select(pet => _mapper.Map<PetDTO>(pet));
+            
+            return Ok(mappedPets);
         }
-        
+
         [HttpGet("{type}")]
-        public async Task<ActionResult<IEnumerable<Pet>>> GetPetByType(string type)
+        public async Task<ActionResult<List<Pet>>> GetPetByType(string type)
         {
             if (_context.Pets == null)
             {
                 return NotFound();
             }
-
+             var pets = _context.Pets.AsQueryable();
             if (type == "Cat")
             {
-                var pets = _context.Pets.AsQueryable();
-                pets =  pets.Where(p => p.Type == Pet.PetType.Cat);
-                return await pets.Include(p => p.Image)
-                                 .Include(p => p.CurrentShelter).ToListAsync();
+                pets = pets.Where(p => p.Type == Pet.PetType.Cat);
+                
+                await pets.Include(p => p.Image)
+                                 .Include(p => p.CurrentShelter)
+                                 .ToListAsync();
+
+                var mappedPets = pets.Select(pet => _mapper.Map<PetDTO>(pet));
+
+                return Ok(mappedPets);
             }
             else if (type == "Dog")
             {
-                var pets = _context.Pets.AsQueryable();
                 pets = pets.Where(p => p.Type == Pet.PetType.Dog);
-                return await pets.Include(p => p.Image)
-                                  .Include(p => p.CurrentShelter).ToListAsync();
+                await pets.Include(p => p.Image)
+                                  .Include(p => p.CurrentShelter)
+                                  .ToListAsync();
+
+                var mappedPets = pets.Select(pet => _mapper.Map<PetDTO>(pet));
+
+                return Ok(mappedPets);
             }
             else
             {
@@ -80,9 +89,13 @@ namespace AnimalRecognizer.Controllers
 
                 pets = pets.Where(p => p.Type == Pet.PetType.Cat && p.Colour == colour);
 
-                return await pets.Include(p => p.Image)
-                                 .Include(p => p.CurrentShelter).ToListAsync();
+                await pets.Include(p => p.Image)
+                                 .Include(p => p.CurrentShelter)
+                                 .ToListAsync();
 
+                var mappedPets = pets.Select(pet => _mapper.Map<PetDTO>(pet));
+
+                return Ok(mappedPets);
             }
             else if (type == "Dog")
             {
@@ -90,8 +103,13 @@ namespace AnimalRecognizer.Controllers
 
                 pets = pets.Where(p => p.Type == Pet.PetType.Dog && p.Colour == colour);
 
-                return await pets.Include(p => p.Image)
-                                 .Include(p => p.CurrentShelter).ToListAsync();
+                await pets.Include(p => p.Image)
+                                 .Include(p => p.CurrentShelter)
+                                 .ToListAsync();
+
+                var mappedPets = pets.Select(pet => _mapper.Map<PetDTO>(pet));
+
+                return Ok(mappedPets);
             }
 
             return NotFound();
