@@ -5,7 +5,6 @@ namespace AnimalRecognizer.Data
 {
     public class UserContext : DbContext
     {
-        public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
 
         public UserContext(DbContextOptions<UserContext> options)
@@ -15,21 +14,22 @@ namespace AnimalRecognizer.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            string adminRoleName = "admin";
-            string buyerRoleName = "buyer";
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(p => p.Id);
 
-            string adminEmail = "admin@gmail.com";
-            string adminPassword = "123456";
+                entity.Property(c => c.Type)
+                .HasConversion<string>()
+                .HasMaxLength(150)
+                .IsUnicode(false);
 
-            // adding roles
-            Role adminRole = new Role { ID = 1, Name = adminRoleName };
-            Role buyerRole = new Role { ID = 2, Name = buyerRoleName };
-            User adminUser = new User { Id = 1, Email = adminEmail, Password = adminPassword, RoleId = adminRole.ID };
+                entity.Property(s => s.Password)
+                .HasColumnType("varchar")
+                .HasMaxLength(150)
+                .IsUnicode(false);
 
-            modelBuilder.Entity<Role>().HasData(new Role[] { adminRole, buyerRole });
-            modelBuilder.Entity<User>().HasData(new User[] { adminUser });
+            });         
             base.OnModelCreating(modelBuilder);
-
         }
     }
 }
