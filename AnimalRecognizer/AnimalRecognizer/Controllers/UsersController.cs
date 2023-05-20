@@ -14,9 +14,9 @@ namespace AnimalRecognizer.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly AnimalRecognizerDBContext _context;
+        private readonly UserContext _context;
 
-        public UsersController(AnimalRecognizerDBContext context)
+        public UsersController(UserContext context)
         {
             _context = context;
         }
