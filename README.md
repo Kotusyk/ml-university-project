@@ -2,6 +2,7 @@
 
 
 # PetCate
+Frontend side you can find [here](https://github.com/Kotusyk/ml-university-project-client)
 >### **Mission**
 > University project is designed to help users find shelter pets using machine learning techniques
 
