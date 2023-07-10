@@ -1,7 +1,7 @@
 ![alt](https://libg.s3.us-east-2.amazonaws.com/download/Best-Friend.jpg "shih-tzu")
 
 
-# PetCate
+# PetCare
 Frontend side you can find [here](https://github.com/Kotusyk/ml-university-project-client)
 >### **Mission**
 > University project is designed to help users find shelter pets using machine learning techniques
